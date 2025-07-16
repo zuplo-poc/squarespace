@@ -20,6 +20,33 @@
       },
       "name": "api-key-inbound",
       "policyType": "api-key-inbound"
+    },
+    {
+      "handler": {
+        "export": "Auth0JwtInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "allowUnauthenticatedRequests": false,
+          "audience": "https://api.example.com/",
+          "auth0Domain": "zudoku.us.auth0.com",
+          "oAuthResourceMetadataEnabled": false
+        }
+      },
+      "name": "auth0-jwt-auth-inbound",
+      "policyType": "auth0-jwt-auth-inbound"
+    },
+    {
+      "handler": {
+        "export": "OpenIdJwtInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "audience": "https://api.example.com/",
+          "issuer": "https://auth.zuplo.site/",
+          "jwkUrl": "https://zudoku.us.auth0.com/.well-known/jwks.json"
+        }
+      },
+      "name": "open-id-jwt-auth-inbound",
+      "policyType": "open-id-jwt-auth-inbound"
     }
   ]
 }

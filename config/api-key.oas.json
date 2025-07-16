@@ -21,7 +21,7 @@
           },
           "policies": {
             "inbound": [
-              "api-key-inbound"
+              "open-id-jwt-auth-inbound"
             ]
           }
         },
