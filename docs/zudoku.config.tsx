@@ -1,19 +1,23 @@
 import type { ZudokuConfig } from "zudoku";
 
-/**
- * Developer Portal Configuration
- * For more information, see:
- * https://zuplo.com/docs/dev-portal/zudoku/configuration/overview
- */
 const config: ZudokuConfig = {
   site: {
-    title: "My Developer Portal",
+    title: "",
     logo: {
       src: {
-        light: "https://cdn.zuplo.com/assets/my-dev-portal-light.svg",
-        dark: "https://cdn.zuplo.com/assets/my-dev-portal-dark.svg",
+        light: "https://upload.wikimedia.org/wikipedia/en/5/53/Squarespace_Logo.svg",
+        dark: "https://upload.wikimedia.org/wikipedia/en/5/53/Squarespace_Logo.svg",
       },
+      width: "200px",
     },
+  },
+  theme: {
+    light: {
+      radius: "0",
+    },
+    dark: {
+      radius: "0",
+    }
   },
   metadata: {
     title: "Developer Portal",
@@ -87,25 +91,32 @@ const config: ZudokuConfig = {
   },
   apiKeys: {
     enabled: true,
-    createKey: async (key, context) => {
-      const createApiKeyRequest = new Request("https://squarespace-main-eda377f.zuplo.app/v1/developer/api-key",
-        {
-          method: "POST",
-          body: JSON.stringify(key),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
+    createKey: async ({ apiKey, context, auth }) => {
+      const createApiKeyRequest = new Request(import.meta.env.ZUPLO_SERVER_URL + "/v1/developer/api-key", {
+        method: "POST",
+        body: JSON.stringify({
+          ...apiKey,
+          email: auth.profile?.email,
+          metadata: {
+            userId: auth.profile?.sub,
+            name: auth.profile?.name,
+          },
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      await context.signRequest(createApiKeyRequest);
-      const createApiKey = await fetch(createApiKeyRequest);
+      const createApiKey = await fetch(
+        await context.signRequest(createApiKeyRequest),
+      );
 
       if (!createApiKey.ok) {
-        throw new Error('Could not create API Key')
-      }
+        throw new Error("Could not create API Key");
+      } 
 
-      return true
-    }
+      return true;
+    },
   },
 };
 

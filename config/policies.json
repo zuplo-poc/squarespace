@@ -2,41 +2,6 @@
   "policies": [
     {
       "handler": {
-        "export": "MockApiInboundPolicy",
-        "module": "$import(@zuplo/runtime)",
-        "options": {}
-      },
-      "name": "mock-api-inbound",
-      "policyType": "mock-api-inbound"
-    },
-    {
-      "handler": {
-        "export": "ApiKeyInboundPolicy",
-        "module": "$import(@zuplo/runtime)",
-        "options": {
-          "allowUnauthenticatedRequests": false,
-          "cacheTtlSeconds": 60
-        }
-      },
-      "name": "api-key-inbound",
-      "policyType": "api-key-inbound"
-    },
-    {
-      "handler": {
-        "export": "Auth0JwtInboundPolicy",
-        "module": "$import(@zuplo/runtime)",
-        "options": {
-          "allowUnauthenticatedRequests": false,
-          "audience": "https://api.example.com/",
-          "auth0Domain": "zudoku.us.auth0.com",
-          "oAuthResourceMetadataEnabled": false
-        }
-      },
-      "name": "auth0-jwt-auth-inbound",
-      "policyType": "auth0-jwt-auth-inbound"
-    },
-    {
-      "handler": {
         "export": "OpenIdJwtInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
@@ -57,7 +22,7 @@
           "cacheTtlSeconds": 60
         }
       },
-      "name": "api-key-inbound-1",
+      "name": "api-key-inbound",
       "policyType": "api-key-inbound"
     }
   ]
