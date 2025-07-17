@@ -97,14 +97,14 @@ const config: ZudokuConfig = {
           }
         });
 
-      context.signRequest(createApiKeyRequest);
+      await context.signRequest(createApiKeyRequest);
       const createApiKey = await fetch(createApiKeyRequest);
 
       if (!createApiKey.ok) {
         throw new Error('Could not create API Key')
       }
 
-      return createApiKey.json()
+      return true
     }
   },
 };
