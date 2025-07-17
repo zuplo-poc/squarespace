@@ -87,6 +87,25 @@ const config: ZudokuConfig = {
   },
   apiKeys: {
     enabled: true,
+    createKey: async (key, context) => {
+      const createApiKeyRequest = new Request("https://squarespace-main-eda377f.zuplo.app/v1/developer/api-key",
+        {
+          method: "POST",
+          body: JSON.stringify(key),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+      context.signRequest(createApiKeyRequest);
+      const createApiKey = await fetch(createApiKeyRequest);
+
+      if (!createApiKey.ok) {
+        throw new Error('Could not create API Key')
+      }
+
+      return createApiKey.json()
+    }
   },
 };
 
