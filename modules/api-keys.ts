@@ -1,30 +1,35 @@
-import { ZuploContext, ZuploRequest, environment, apiServices } from "@zuplo/runtime";
+import { ZuploContext, ZuploRequest, environment } from "@zuplo/runtime";
+
+const accountName = environment.ZUPLO_ACCOUNT_NAME;
+const bucketName = environment.BUCKET_NAME;
 
 export default async function (request: ZuploRequest, context: ZuploContext) {
-  const bucketId = environment.BUCKET_ID;
-
   const sub = request.user?.sub;
   const userClaims = request.user?.data;
-  const body = await request.json()
+  const body = await request.json();
 
-  await apiServices(`/v2/key-auth/${bucketId}/consumers`, {
-    method: "POST",
-    data: {
-      name: crypto.randomUUID(),
-      description: body.description ?? "API Key",
-      metadata: {
-        // Pass any metadata
-        squareSpaceId: userClaims.squareSpaceId ?? "anon",
-        name: body.metadata?.name,
-        email: body.metadata?.email,
+  const response = await fetch(
+    `https://dev.zuplo.com/v1/accounts/${accountName}/key-buckets/${bucketName}/consumers?with-api-key=true`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${environment.ZUP_API_KEY}`,
       },
-      tags: {},
-      managers: [
-        {
-          // email: "", // Optionally pass the users email
-          sub, // This links the identities
-        }
-      ]
-    },
-  });
+      body: JSON.stringify({
+        name: crypto.randomUUID(),
+        managers: [
+          { email: body.metadata?.email ?? "nobody@example.com", sub: sub },
+        ],
+        description: body.description ?? "API Key",
+        tags: {
+          sub: sub,
+          email: body.metadata?.email,
+        },
+        metadata: {},
+      }),
+    }
+  );
+
+  return response.json();
 }
