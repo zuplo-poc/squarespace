@@ -104,6 +104,9 @@ const AppsPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-[max-content_1fr] gap-2 text-sm">
+                  <strong>Client ID:</strong> <Secret>{app.clientId}</Secret>
+                  <strong>Client Secret:</strong>{" "}
+                  <Secret>{app.clientSecret}</Secret>
                   <strong>Scopes:</strong> {app.scopes.join(", ")}
                   <strong>Redirect URIs:</strong>{" "}
                   {app.redirectUris.split("\n").join(", ")}
@@ -112,6 +115,14 @@ const AppsPage = () => {
             </Card>
           ))}
       </TooltipProvider>
+    </div>
+  );
+};
+
+const Secret = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="text-sm font-mono border px-2 py-1 rounded-md text-muted-foreground">
+      {children}
     </div>
   );
 };
