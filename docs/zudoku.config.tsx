@@ -1,11 +1,15 @@
 import type { ZudokuConfig } from "zudoku";
+import AppsPage from "./src/AppsPage";
+import CreateAppPage from "./src/CreateAppPage";
+import { AppWindowIcon } from "lucide-react";
 
 const config: ZudokuConfig = {
   site: {
     title: "",
     logo: {
       src: {
-        light: "https://upload.wikimedia.org/wikipedia/en/5/53/Squarespace_Logo.svg",
+        light:
+          "https://upload.wikimedia.org/wikipedia/en/5/53/Squarespace_Logo.svg",
         dark: "https://upload.wikimedia.org/wikipedia/en/5/53/Squarespace_Logo.svg",
       },
       width: "200px",
@@ -17,7 +21,7 @@ const config: ZudokuConfig = {
     },
     dark: {
       radius: "0",
-    }
+    },
   },
   metadata: {
     title: "Developer Portal",
@@ -68,6 +72,20 @@ const config: ZudokuConfig = {
       to: "/api",
       label: "API Reference",
     },
+    {
+      type: "custom-page",
+      display: "auth",
+      label: "My Apps",
+      path: "/apps",
+      element: <AppsPage />,
+    },
+    {
+      type: "custom-page",
+      display: "hide",
+      label: "Create App",
+      path: "/apps/create",
+      element: <CreateAppPage />,
+    },
   ],
   redirects: [{ from: "/", to: "/api" }],
   apis: [
@@ -89,35 +107,20 @@ const config: ZudokuConfig = {
     clientId: "f8I87rdsCRo4nU2FHf0fHVwA9P7xi7Ml",
     audience: "https://api.example.com/",
   },
-  apiKeys: {
-    enabled: true,
-    createKey: async ({ apiKey, context, auth }) => {
-      const createApiKeyRequest = new Request(import.meta.env.ZUPLO_SERVER_URL + "/v1/developer/api-key", {
-        method: "POST",
-        body: JSON.stringify({
-          ...apiKey,
-          email: auth.profile?.email,
-          metadata: {
-            userId: auth.profile?.sub,
-            name: auth.profile?.name,
+  plugins: [
+    {
+      getProfileMenuItems: () => {
+        return [
+          {
+            label: "My Apps",
+            path: "/apps",
+            category: "middle",
+            icon: AppWindowIcon,
           },
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const createApiKey = await fetch(
-        await context.signRequest(createApiKeyRequest),
-      );
-
-      if (!createApiKey.ok) {
-        throw new Error("Could not create API Key");
-      } 
-
-      return true;
+        ];
+      },
     },
-  },
+  ],
 };
 
 export default config;
